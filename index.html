@@ -3,196 +3,298 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sac High Attendance Portal</title>
+    <title>Sac High - St. HOPE Attendance Portal</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Plus Jakarta Sans', sans-serif; }
+        .font-mono { font-family: 'JetBrains Mono', monospace; }
+    </style>
 </head>
-<body class="bg-gray-950 text-white min-h-screen font-sans flex flex-col md:flex-row">
+<body class="bg-gray-950 text-slate-100 min-h-screen font-sans flex flex-col selection:bg-amber-500 selection:text-gray-950">
 
-    <!-- LEFT SIDEBAR NAVIGATION -->
-    <aside class="w-full md:w-64 bg-gray-900 border-r-0 md:border-r-2 border-gray-800 p-6 flex flex-col justify-between shrink-0">
-        <div>
-            <!-- School Brand -->
-            <div class="flex items-center gap-3 mb-8">
-                <span class="text-3xl">🐉</span>
+    <!-- TOP ENTERPRISE HEADER BAR -->
+    <header class="bg-gray-900/90 backdrop-blur-md border-b border-gray-800 px-6 py-3 flex justify-between items-center text-xs sticky top-0 z-40">
+        <div class="flex items-center gap-4">
+            <div class="flex items-center gap-3">
+                <div class="w-9 h-9 bg-amber-500/10 border border-amber-500/30 rounded-xl flex items-center justify-center text-xl shadow-inner">
+                    🐉
+                </div>
                 <div>
-                    <h1 class="font-black text-amber-400 text-lg leading-tight">SAC HIGH</h1>
-                    <p class="text-xs text-gray-400">Attendance Portal</p>
+                    <div class="flex items-center gap-2">
+                        <h1 class="font-black text-amber-400 text-sm tracking-wide leading-none">ST. HOPE PUBLIC SCHOOLS</h1>
+                        <span class="bg-emerald-950 text-emerald-400 border border-emerald-800 text-[10px] px-2 py-0.5 rounded font-mono font-semibold">DISTRICT LIVE</span>
+                    </div>
+                    <p class="text-[11px] text-gray-400 font-medium">Sacramento Charter High School • Attendance Management System</p>
+                </div>
+            </div>
+            <div class="hidden lg:flex items-center gap-2 border-l border-gray-800 pl-4 ml-2 text-[11px] text-gray-400">
+                <span class="bg-gray-800 border border-gray-700 px-2.5 py-1 rounded-lg text-gray-300 font-semibold">2026–2027 Academic Year</span>
+                <span class="bg-gray-800 border border-gray-700 px-2.5 py-1 rounded-lg text-gray-300 font-semibold">Semester 1</span>
+            </div>
+        </div>
+
+        <div class="flex items-center gap-4">
+            <div class="hidden sm:flex items-center gap-2.5 bg-black/60 px-3.5 py-1.5 rounded-xl border border-gray-800">
+                <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+                <span class="text-gray-400 text-[10px] font-bold uppercase tracking-wider">System Clock:</span>
+                <span class="text-amber-400 font-mono text-xs font-semibold" id="liveClock">08:40:00 AM</span>
+            </div>
+            <div class="flex items-center gap-2.5 bg-gray-800/80 px-3.5 py-1.5 rounded-xl border border-gray-700 text-white font-medium text-xs">
+                <div class="w-6 h-6 rounded-full bg-amber-500 text-gray-950 font-black flex items-center justify-center text-[10px]">
+                    SH
+                </div>
+                <span>Faculty Portal</span>
+            </div>
+        </div>
+    </header>
+
+    <div class="flex-1 flex flex-col md:flex-row">
+
+        <!-- LEFT SIDEBAR NAVIGATION -->
+        <aside class="w-full md:w-64 bg-gray-900 border-r-0 md:border-r border-gray-800 p-4 flex flex-col justify-between shrink-0">
+            <div class="space-y-6">
+                <!-- Navigation Sections -->
+                <nav class="space-y-1.5">
+                    <div class="px-3 py-1 text-[10px] font-black text-gray-500 uppercase tracking-widest">Main Dashboard</div>
+                    <button onclick="switchView('kiosk')" id="nav-kiosk" class="w-full text-left px-4 py-3 rounded-xl font-bold bg-amber-500 text-gray-950 flex items-center justify-between shadow-lg shadow-amber-500/10 transition-all">
+                        <span class="flex items-center gap-3"><span>📱</span> Student Kiosk</span>
+                        <span class="text-[10px] bg-gray-950/20 px-2 py-0.5 rounded font-mono font-bold">LIVE</span>
+                    </button>
+                    <button onclick="switchView('roster')" id="nav-roster" class="w-full text-left px-4 py-3 rounded-xl font-semibold text-gray-300 hover:bg-gray-800/80 flex items-center justify-between transition-all">
+                        <span class="flex items-center gap-3"><span>📋</span> Class Roster</span>
+                        <span id="navRosterBadge" class="text-[10px] bg-gray-800 border border-gray-700 px-2 py-0.5 rounded text-gray-400 font-mono">0/0</span>
+                    </button>
+
+                    <div class="px-3 py-1 pt-4 text-[10px] font-black text-gray-500 uppercase tracking-widest">District Integration</div>
+                    <button onclick="switchView('infinite')" id="nav-infinite" class="w-full text-left px-4 py-3 rounded-xl font-semibold text-gray-300 hover:bg-gray-800/80 flex items-center justify-between transition-all">
+                        <span class="flex items-center gap-3"><span>🔄</span> Infinite Campus Sync</span>
+                        <span class="w-2 h-2 rounded-full bg-emerald-400"></span>
+                    </button>
+                    <button onclick="switchView('settings')" id="nav-settings" class="w-full text-left px-4 py-3 rounded-xl font-semibold text-gray-300 hover:bg-gray-800/80 flex items-center gap-3 transition-all">
+                        <span>⚙️</span> Period Schedule
+                    </button>
+                </nav>
+
+                <!-- Active Period Card in Sidebar -->
+                <div class="bg-black/50 border border-gray-800 p-3.5 rounded-2xl space-y-2">
+                    <div class="text-[10px] font-bold text-gray-400 uppercase tracking-wider">Active Classroom</div>
+                    <div class="font-extrabold text-sm text-amber-400" id="sidebarPeriodTitle">Period 1</div>
+                    <div class="text-[11px] text-gray-300 truncate" id="sidebarSchoolTitle">Sacramento Charter High School</div>
+                    <div class="pt-2 border-t border-gray-900 flex justify-between items-center text-[10px]">
+                        <span class="text-gray-500">Grade Focus:</span>
+                        <span class="text-emerald-400 font-mono font-semibold" id="sidebarGradeFocus">Grades 9-11</span>
+                    </div>
                 </div>
             </div>
 
-            <!-- Navigation Links -->
-            <nav class="space-y-2">
-                <button onclick="switchView('kiosk')" id="nav-kiosk" class="w-full text-left px-4 py-3 rounded-xl font-bold bg-amber-500 border-2 border-amber-400 text-gray-950 flex items-center gap-3 shadow-lg transition-all">
-                    <span>📱</span> Student Kiosk
-                </button>
-                <button onclick="switchView('roster')" id="nav-roster" class="w-full text-left px-4 py-3 rounded-xl font-bold text-gray-300 hover:bg-gray-800 flex items-center gap-3 transition-all">
-                    <span>📋</span> Class Roster
-                </button>
-                <button onclick="switchView('infinite')" id="nav-infinite" class="w-full text-left px-4 py-3 rounded-xl font-bold text-gray-300 hover:bg-gray-800 flex items-center gap-3 transition-all">
-                    <span>🔄</span> District Sync
-                </button>
-                <button onclick="switchView('settings')" id="nav-settings" class="w-full text-left px-4 py-3 rounded-xl font-bold text-gray-300 hover:bg-gray-800 flex items-center gap-3 transition-all">
-                    <span>⚙️</span> Class Settings
-                </button>
-            </nav>
-        </div>
-
-        <!-- Quick Status Footer -->
-        <div class="mt-8 pt-4 border-t border-gray-800 text-xs space-y-2">
-            <div class="flex items-center justify-between text-gray-400">
-                <span>Infinite Campus:</span>
-                <span class="text-emerald-400 font-semibold flex items-center gap-1">
-                    <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span> Ready
-                </span>
+            <!-- Footer Meta -->
+            <div class="mt-6 pt-4 border-t border-gray-800 text-[11px] space-y-2 text-gray-400">
+                <div class="flex justify-between items-center">
+                    <span>Server:</span>
+                    <span class="text-gray-300 font-mono text-[10px]">sthope-ic-uswest2</span>
+                </div>
+                <div class="flex justify-between items-center">
+                    <span>Protocol:</span>
+                    <span class="text-emerald-400 font-mono text-[10px]">OAuth 2.0 (TLS 1.3)</span>
+                </div>
             </div>
-            <div class="text-gray-500 font-mono text-[11px]" id="liveClock">08:40:00 AM</div>
-        </div>
-    </aside>
+        </aside>
 
-    <!-- MAIN CONTENT AREA -->
-    <main class="flex-1 p-6 flex justify-center items-start">
+        <!-- MAIN CONTENT AREA -->
+        <main class="flex-1 p-6 flex justify-center items-start bg-gray-950 min-h-[calc(100vh-60px)]">
 
-        <!-- 1. STUDENT KIOSK VIEW -->
-        <div id="view-kiosk" class="w-full max-w-md bg-gray-900 border-2 border-gray-800 rounded-3xl p-6 text-center shadow-2xl">
-            <span id="kioskBadge" class="bg-gray-950 text-amber-400 border border-amber-500/30 px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider">Period 1 Check-In</span>
-            <h2 class="text-2xl font-black mt-3 mb-1 text-white">Student Check-In</h2>
-            <p class="text-xs text-gray-400 mb-6">Enter your 4-digit ID number</p>
+            <!-- 1. STUDENT KIOSK VIEW -->
+            <div id="view-kiosk" class="w-full max-w-md bg-gray-900 border border-gray-800 rounded-3xl p-6 text-center shadow-2xl space-y-5">
+                <div class="flex justify-between items-center">
+                    <span id="kioskBadge" class="bg-amber-500/10 text-amber-400 border border-amber-500/30 px-3 py-1 rounded-full text-xs font-extrabold uppercase tracking-wider">Period 1 Check-In</span>
+                    <span class="text-xs text-emerald-400 font-mono bg-emerald-950/60 border border-emerald-800 px-2.5 py-0.5 rounded-md flex items-center gap-1.5">
+                        <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span> Terminal #1
+                    </span>
+                </div>
 
-            <div id="display" class="bg-black text-emerald-400 text-4xl font-mono p-4 rounded-2xl mb-4 tracking-widest border border-gray-800 h-16 flex items-center justify-center">----</div>
-
-            <div id="statusMsg" class="bg-gray-950 border border-gray-800 p-3 rounded-xl mb-6 text-xs font-semibold text-amber-300">
-                Enter ID 5577 to test check-in
-            </div>
-
-            <div class="grid grid-cols-3 gap-3 max-w-xs mx-auto mb-2">
-                <button onclick="press('1')" class="bg-gray-800 hover:bg-gray-700 text-2xl font-bold py-4 rounded-2xl border border-gray-700 active:bg-gray-600">1</button>
-                <button onclick="press('2')" class="bg-gray-800 hover:bg-gray-700 text-2xl font-bold py-4 rounded-2xl border border-gray-700 active:bg-gray-600">2</button>
-                <button onclick="press('3')" class="bg-gray-800 hover:bg-gray-700 text-2xl font-bold py-4 rounded-2xl border border-gray-700 active:bg-gray-600">3</button>
-                <button onclick="press('4')" class="bg-gray-800 hover:bg-gray-700 text-2xl font-bold py-4 rounded-2xl border border-gray-700 active:bg-gray-600">4</button>
-                <button onclick="press('5')" class="bg-gray-800 hover:bg-gray-700 text-2xl font-bold py-4 rounded-2xl border border-gray-700 active:bg-gray-600">5</button>
-                <button onclick="press('6')" class="bg-gray-800 hover:bg-gray-700 text-2xl font-bold py-4 rounded-2xl border border-gray-700 active:bg-gray-600">6</button>
-                <button onclick="press('7')" class="bg-gray-800 hover:bg-gray-700 text-2xl font-bold py-4 rounded-2xl border border-gray-700 active:bg-gray-600">7</button>
-                <button onclick="press('8')" class="bg-gray-800 hover:bg-gray-700 text-2xl font-bold py-4 rounded-2xl border border-gray-700 active:bg-gray-600">8</button>
-                <button onclick="press('9')" class="bg-gray-800 hover:bg-gray-700 text-2xl font-bold py-4 rounded-2xl border border-gray-700 active:bg-gray-600">9</button>
-                <button onclick="clearPin()" class="bg-red-950 hover:bg-red-900 text-red-400 text-xs font-bold py-4 rounded-2xl border border-red-800">CLEAR</button>
-                <button onclick="press('0')" class="bg-gray-800 hover:bg-gray-700 text-2xl font-bold py-4 rounded-2xl border border-gray-700 active:bg-gray-600">0</button>
-                <button onclick="submitPin()" class="bg-emerald-600 hover:bg-emerald-500 text-gray-950 text-xs font-bold py-4 rounded-2xl border border-emerald-400">ENTER</button>
-            </div>
-        </div>
-
-        <!-- 2. TEACHER ROSTER VIEW -->
-        <div id="view-roster" class="hidden w-full max-w-2xl bg-gray-900 border-2 border-gray-800 rounded-3xl p-6 shadow-2xl space-y-6">
-            <div class="flex justify-between items-center border-b border-gray-800 pb-4">
                 <div>
-                    <h2 class="text-2xl font-black text-white">Class Roster</h2>
-                    <p id="rosterSchoolLabel" class="text-xs text-gray-400">Period 1 • Sacramento Charter High School</p>
-                </div>
-                <span id="stats" class="bg-black px-4 py-2 rounded-xl text-xs font-bold text-amber-400 border border-gray-800">Present: 0 / 2</span>
-            </div>
-
-            <div class="space-y-3">
-                <div id="student-5577" class="bg-black p-4 rounded-2xl border border-gray-800 flex justify-between items-center">
-                    <div>
-                        <p class="font-bold text-lg text-white">Elijah Cooks</p>
-                        <p class="text-xs text-gray-400">ID: 5577 | Senior</p>
-                    </div>
-                    <div class="flex items-center gap-3">
-                        <span id="status-5577" class="bg-red-950 text-red-400 border border-red-800 px-4 py-1.5 rounded-xl text-xs font-bold">Absent</span>
-                        <button onclick="toggleOverride('5577')" class="bg-gray-800 hover:bg-gray-700 text-xs px-3 py-2 rounded-xl border border-gray-700 font-bold text-white">Change</button>
-                    </div>
+                    <h2 class="text-2xl font-black text-white">Student Touch Kiosk</h2>
+                    <p class="text-xs text-gray-400 mt-1">Enter the last 4 digits of your official Student ID</p>
                 </div>
 
-                <div id="student-1234" class="bg-black p-4 rounded-2xl border border-gray-800 flex justify-between items-center">
-                    <div>
-                        <p class="font-bold text-lg text-white">Marcus Johnson</p>
-                        <p class="text-xs text-gray-400">ID: 1234 | Senior</p>
-                    </div>
-                    <div class="flex items-center gap-3">
-                        <span id="status-1234" class="bg-red-950 text-red-400 border border-red-800 px-4 py-1.5 rounded-xl text-xs font-bold">Absent</span>
-                        <button onclick="toggleOverride('1234')" class="bg-gray-800 hover:bg-gray-700 text-xs px-3 py-2 rounded-xl border border-gray-700 font-bold text-white">Change</button>
-                    </div>
+                <div id="display" class="bg-black text-emerald-400 text-5xl font-mono py-4 rounded-2xl tracking-widest border border-gray-800 h-20 flex items-center justify-center font-black shadow-inner">----</div>
+
+                <div id="statusMsg" class="bg-gray-950 border border-gray-800 p-3.5 rounded-xl text-xs font-semibold text-amber-300 transition-all">
+                    Ready for student PIN input
+                </div>
+
+                <!-- Number Pad -->
+                <div class="grid grid-cols-3 gap-3 max-w-xs mx-auto">
+                    <button onclick="press('1')" class="bg-gray-800/80 hover:bg-gray-700 active:bg-amber-500 active:text-gray-950 text-2xl font-bold py-4 rounded-2xl border border-gray-700/80 transition-all active:scale-95 shadow-md">1</button>
+                    <button onclick="press('2')" class="bg-gray-800/80 hover:bg-gray-700 active:bg-amber-500 active:text-gray-950 text-2xl font-bold py-4 rounded-2xl border border-gray-700/80 transition-all active:scale-95 shadow-md">2</button>
+                    <button onclick="press('3')" class="bg-gray-800/80 hover:bg-gray-700 active:bg-amber-500 active:text-gray-950 text-2xl font-bold py-4 rounded-2xl border border-gray-700/80 transition-all active:scale-95 shadow-md">3</button>
+                    <button onclick="press('4')" class="bg-gray-800/80 hover:bg-gray-700 active:bg-amber-500 active:text-gray-950 text-2xl font-bold py-4 rounded-2xl border border-gray-700/80 transition-all active:scale-95 shadow-md">4</button>
+                    <button onclick="press('5')" class="bg-gray-800/80 hover:bg-gray-700 active:bg-amber-500 active:text-gray-950 text-2xl font-bold py-4 rounded-2xl border border-gray-700/80 transition-all active:scale-95 shadow-md">5</button>
+                    <button onclick="press('6')" class="bg-gray-800/80 hover:bg-gray-700 active:bg-amber-500 active:text-gray-950 text-2xl font-bold py-4 rounded-2xl border border-gray-700/80 transition-all active:scale-95 shadow-md">6</button>
+                    <button onclick="press('7')" class="bg-gray-800/80 hover:bg-gray-700 active:bg-amber-500 active:text-gray-950 text-2xl font-bold py-4 rounded-2xl border border-gray-700/80 transition-all active:scale-95 shadow-md">7</button>
+                    <button onclick="press('8')" class="bg-gray-800/80 hover:bg-gray-700 active:bg-amber-500 active:text-gray-950 text-2xl font-bold py-4 rounded-2xl border border-gray-700/80 transition-all active:scale-95 shadow-md">8</button>
+                    <button onclick="press('9')" class="bg-gray-800/80 hover:bg-gray-700 active:bg-amber-500 active:text-gray-950 text-2xl font-bold py-4 rounded-2xl border border-gray-700/80 transition-all active:scale-95 shadow-md">9</button>
+                    <button onclick="clearPin()" class="bg-red-950/60 hover:bg-red-900 text-red-300 text-xs font-extrabold py-4 rounded-2xl border border-red-900 transition-all active:scale-95">CLEAR</button>
+                    <button onclick="press('0')" class="bg-gray-800/80 hover:bg-gray-700 active:bg-amber-500 active:text-gray-950 text-2xl font-bold py-4 rounded-2xl border border-gray-700/80 transition-all active:scale-95 shadow-md">0</button>
+                    <button onclick="submitPin()" class="bg-emerald-500 hover:bg-emerald-400 text-gray-950 text-xs font-black py-4 rounded-2xl border border-emerald-400 transition-all active:scale-95 shadow-lg shadow-emerald-500/20">ENTER</button>
                 </div>
             </div>
 
-            <button onclick="exportCSV()" class="w-full bg-black hover:bg-gray-800 font-semibold py-3 rounded-2xl border border-gray-700 text-center text-xs text-gray-300">
-                📥 Save Excel/CSV Backup File
+            <!-- 2. TEACHER ROSTER VIEW -->
+            <div id="view-roster" class="hidden w-full max-w-3xl bg-gray-900 border border-gray-800 rounded-3xl p-6 shadow-2xl space-y-6">
+                <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-gray-800 pb-4">
+                    <div>
+                        <h2 class="text-2xl font-black text-white">Classroom Roster</h2>
+                        <p id="rosterSchoolLabel" class="text-xs text-gray-400 mt-0.5">Period 1 • Sacramento Charter High School</p>
+                    </div>
+                    <div class="flex items-center gap-2">
+                        <span id="stats" class="bg-black px-4 py-2 rounded-xl text-xs font-bold text-amber-400 border border-gray-800">Present: 0 / 0</span>
+                        <span id="percentBadge" class="bg-emerald-950 text-emerald-400 border border-emerald-800 px-3 py-2 rounded-xl text-xs font-mono font-bold">0%</span>
+                    </div>
+                </div>
+
+                <!-- Sync Notification Banner -->
+                <div class="bg-emerald-950/30 border border-emerald-800/60 p-3.5 rounded-2xl flex justify-between items-center text-xs">
+                    <div class="flex items-center gap-2">
+                        <span class="text-base">✨</span>
+                        <span class="text-emerald-300 font-medium">Roster auto-imported from Infinite Campus district server</span>
+                    </div>
+                    <span id="activePeriodTag" class="bg-emerald-900/60 text-emerald-300 font-mono text-[10px] px-2.5 py-1 rounded-lg font-bold">PERIOD 1</span>
+                </div>
+
+                <!-- Student List Container -->
+                <div id="rosterContainer" class="space-y-3 min-h-[160px]"></div>
+
+                <!-- Action Controls -->
+                <div class="flex flex-col sm:flex-row gap-3 pt-2">
+                    <button onclick="exportCSV()" class="flex-1 bg-gray-800 hover:bg-gray-700 font-bold py-3.5 rounded-2xl border border-gray-700 text-center text-xs text-gray-200 transition-all flex items-center justify-center gap-2">
+                        <span>📥</span> Export Official CSV Attendance Record
+                    </button>
+                    <button onclick="resetRoster()" class="bg-red-950/50 hover:bg-red-900/80 text-red-300 font-bold px-5 py-3.5 rounded-2xl border border-red-900 text-xs transition-all">
+                        Reset Period Records
+                    </button>
+                </div>
+            </div>
+
+            <!-- 3. DISTRICT SYNC TAB -->
+            <div id="view-infinite" class="hidden w-full max-w-xl bg-gray-900 border border-gray-800 rounded-3xl p-6 shadow-2xl space-y-6">
+                <div class="border-b border-gray-800 pb-4 flex justify-between items-center">
+                    <div>
+                        <h2 class="text-2xl font-black text-white">District Sync Portal</h2>
+                        <p class="text-xs text-gray-400 mt-0.5">St. HOPE Infinite Campus Direct API Integration</p>
+                    </div>
+                    <span class="bg-emerald-950 text-emerald-400 border border-emerald-800 text-xs px-3 py-1 rounded-full font-bold flex items-center gap-1.5">
+                        <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span> API Online
+                    </span>
+                </div>
+
+                <!-- API Connection Info -->
+                <div class="bg-black/60 p-5 rounded-2xl border border-gray-800 space-y-3 text-xs">
+                    <div class="flex justify-between border-b border-gray-900 pb-2.5">
+                        <span class="text-gray-400">Target Server:</span>
+                        <span class="font-bold text-gray-200">St. HOPE Public Schools (Infinite Campus)</span>
+                    </div>
+                    <div class="flex justify-between border-b border-gray-900 pb-2.5">
+                        <span class="text-gray-400">Active Classroom Period:</span>
+                        <span class="font-bold text-gray-200" id="icPeriodLabel">Period 1</span>
+                    </div>
+                    <div class="flex justify-between border-b border-gray-900 pb-2.5">
+                        <span class="text-gray-400">Security Handshake:</span>
+                        <span class="font-mono text-emerald-400">OAuth 2.0 SSL Verified</span>
+                    </div>
+                    <div class="flex justify-between">
+                        <span class="text-gray-400">Last Sync Session:</span>
+                        <span id="lastSyncTime" class="font-mono text-gray-400">Today at 08:00 AM</span>
+                    </div>
+                </div>
+
+                <!-- Simulated API Credentials Form -->
+                <div class="bg-black/40 p-4 rounded-2xl border border-gray-800/80 space-y-3">
+                    <p class="text-[10px] font-bold text-amber-400 uppercase tracking-wider">OAuth 2.0 Integration Credentials</p>
+                    <div class="grid grid-cols-2 gap-3 text-xs">
+                        <div>
+                            <label class="block text-gray-400 text-[10px] mb-1">Client ID</label>
+                            <input type="text" value="STHOPE-IC-99824" disabled class="w-full bg-gray-900 border border-gray-800 rounded-xl px-3 py-2 text-gray-400 font-mono text-[11px]">
+                        </div>
+                        <div>
+                            <label class="block text-gray-400 text-[10px]">API Secret Key</label>
+                            <input type="password" value="••••••••••••••••" disabled class="w-full bg-gray-900 border border-gray-800 rounded-xl px-3 py-2 text-gray-400 font-mono text-[11px]">
+                        </div>
+                    </div>
+                </div>
+
+                <button onclick="startSyncSequence()" id="syncBtn" class="w-full bg-amber-500 hover:bg-amber-400 text-gray-950 font-black py-4 rounded-2xl border border-amber-300 text-center flex items-center justify-center gap-2 text-sm shadow-xl shadow-amber-500/10 transition-all">
+                    ⚡ Push Attendance to Infinite Campus
+                </button>
+
+                <!-- Terminal Simulation Logs -->
+                <div id="syncTerminal" class="hidden bg-black border border-gray-800 p-4 rounded-2xl font-mono text-xs space-y-2 text-gray-300">
+                    <div id="syncLog1" class="text-gray-500">▶ Initializing secure OAuth 2.0 tunnel...</div>
+                    <div id="syncLog2" class="hidden text-amber-400">▶ Validating student 4-digit PIN mappings for active period...</div>
+                    <div id="syncLog3" class="hidden text-emerald-400">▶ Transmitting 4 student records to Infinite Campus (HTTP 200 OK)...</div>
+                    <div id="syncLog4" class="hidden text-emerald-300 font-bold">✔ Sync Successful: Infinite Campus Database Updated (Ref #IC-998241)</div>
+                </div>
+            </div>
+
+            <!-- 4. CLASSROOM SETTINGS TAB -->
+            <div id="view-settings" class="hidden w-full max-w-xl bg-gray-900 border border-gray-800 rounded-3xl p-6 shadow-2xl space-y-6">
+                <div class="border-b border-gray-800 pb-4">
+                    <h2 class="text-2xl font-black text-white">Classroom Settings</h2>
+                    <p class="text-xs text-gray-400 mt-0.5">Manage school campus & multi-period schedules</p>
+                </div>
+
+                <div class="space-y-4">
+                    <div class="space-y-2">
+                        <label class="block text-xs font-bold uppercase tracking-wider text-amber-400">School Campus</label>
+                        <select id="schoolSelect" onchange="updateClassSettings()" class="w-full bg-black border border-gray-800 text-white font-semibold rounded-2xl p-3.5 text-sm focus:outline-none focus:border-amber-400 transition-all">
+                            <option value="Sacramento Charter High School">Sacramento Charter High School</option>
+                            <option value="PS7 Middle School">PS7 Middle School</option>
+                            <option value="PS7 Elementary School">PS7 Elementary School</option>
+                        </select>
+                    </div>
+
+                    <div class="space-y-2">
+                        <label class="block text-xs font-bold uppercase tracking-wider text-amber-400">Active Class Period</label>
+                        <select id="periodSelect" onchange="updateClassSettings()" class="w-full bg-black border border-gray-800 text-white font-semibold rounded-2xl p-3.5 text-sm focus:outline-none focus:border-amber-400 transition-all">
+                            <option value="Homeroom / Advisory">Homeroom / Advisory</option>
+                            <option value="Period 1" selected>Period 1 (Grades 9-11)</option>
+                            <option value="Period 2">Period 2 (Grades 9-11)</option>
+                            <option value="Period 3">Period 3 (Grades 9-11)</option>
+                            <option value="Period 4">Period 4 (Grades 9-12 Senior Block)</option>
+                            <option value="Period 5">Period 5 (Grades 9-12 Senior Block)</option>
+                            <option value="Period 6">Period 6 (Grades 9-11)</option>
+                            <option value="Period 7">Period 7 (Advisory / Electives)</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+        </main>
+    </div>
+
+    <!-- STUDENT CHECK-IN VERIFICATION MODAL -->
+    <div id="checkinModal" class="fixed inset-0 bg-black/80 backdrop-blur-md hidden flex items-center justify-center p-4 z-50">
+        <div class="bg-gray-900 border-2 border-emerald-500/80 rounded-3xl p-8 max-w-sm w-full text-center space-y-5 shadow-2xl shadow-emerald-500/20 scale-100 transition-all">
+            <div class="w-16 h-16 bg-emerald-500/20 border-2 border-emerald-400 rounded-full flex items-center justify-center mx-auto text-3xl text-emerald-400">
+                ✓
+            </div>
+            <div>
+                <span class="bg-emerald-950 text-emerald-400 text-[10px] font-extrabold uppercase px-3 py-1 rounded-full border border-emerald-800">Attendance Recorded</span>
+                <h3 id="modalStudentName" class="text-2xl font-black text-white mt-3">Student Name</h3>
+                <p id="modalStudentDetails" class="text-xs text-gray-400 font-mono mt-1">ID: 5577 • Sacramento Charter High</p>
+            </div>
+            <div class="bg-black/60 p-3 rounded-2xl border border-gray-800 text-xs text-gray-300 font-mono flex justify-between">
+                <span>Timestamp:</span>
+                <span id="modalTimestamp" class="text-amber-400 font-bold">08:40:02 AM</span>
+            </div>
+            <button onclick="closeModal()" class="w-full bg-emerald-500 hover:bg-emerald-400 text-gray-950 font-black py-3.5 rounded-2xl border border-emerald-400 text-xs tracking-wider uppercase transition-all">
+                Done / Next Student
             </button>
         </div>
+    </div>
 
-        <!-- 3. DISTRICT SYNC TAB -->
-        <div id="view-infinite" class="hidden w-full max-w-xl bg-gray-900 border-2 border-gray-800 rounded-3xl p-6 shadow-2xl space-y-6">
-            <div class="border-b border-gray-800 pb-4 flex justify-between items-center">
-                <div>
-                    <h2 class="text-2xl font-black text-white">District Sync</h2>
-                    <p class="text-xs text-gray-400">Infinite Campus Direct Portal</p>
-                </div>
-                <span class="bg-emerald-950 text-emerald-400 border border-emerald-800 text-xs px-3 py-1 rounded-full font-bold flex items-center gap-1.5">
-                    <span class="w-2 h-2 rounded-full bg-emerald-400"></span> System Active
-                </span>
-            </div>
-
-            <div class="bg-black p-5 rounded-2xl border border-gray-800 space-y-3 text-xs">
-                <div class="flex justify-between border-b border-gray-900 pb-2">
-                    <span class="text-gray-400">Target System:</span>
-                    <span class="font-bold text-gray-200">St. HOPE Infinite Campus Database</span>
-                </div>
-                <div class="flex justify-between border-b border-gray-900 pb-2">
-                    <span class="text-gray-400">Current Period:</span>
-                    <span class="font-bold text-gray-200" id="icPeriodLabel">Period 1</span>
-                </div>
-                <div class="flex justify-between">
-                    <span class="text-gray-400">Last Sync:</span>
-                    <span id="lastSyncTime" class="font-mono text-gray-300">Not synced yet today</span>
-                </div>
-            </div>
-
-            <div class="space-y-3">
-                <button onclick="syncInfiniteCampus()" id="syncBtn" class="w-full bg-amber-500 hover:bg-amber-400 text-gray-950 font-black py-4 rounded-2xl border border-amber-300 text-center flex items-center justify-center gap-2 text-base shadow-xl active:scale-95 transition-transform">
-                    ⚡ Sync Attendance to Infinite Campus
-                </button>
-                
-                <div id="syncSuccessNotice" class="hidden bg-emerald-950 border border-emerald-600 p-4 rounded-2xl text-center text-emerald-300 font-bold text-sm">
-                    ✅ Attendance successfully recorded in Infinite Campus!
-                </div>
-            </div>
-        </div>
-
-        <!-- 4. CLASSROOM SETTINGS TAB -->
-        <div id="view-settings" class="hidden w-full max-w-xl bg-gray-900 border-2 border-gray-800 rounded-3xl p-6 shadow-2xl space-y-6">
-            <div class="border-b border-gray-800 pb-4">
-                <h2 class="text-2xl font-black text-white">Classroom Settings</h2>
-                <p class="text-xs text-gray-400">Manage school location and period schedules</p>
-            </div>
-
-            <div class="space-y-4">
-                <div class="space-y-2">
-                    <label class="block text-xs font-bold uppercase tracking-wider text-amber-400">School Campus</label>
-                    <select id="schoolSelect" onchange="updateClassSettings()" class="w-full bg-black border border-gray-800 text-white font-semibold rounded-2xl p-3 text-sm focus:outline-none">
-                        <option value="Sacramento Charter High School">Sacramento Charter High School</option>
-                        <option value="PS7 Middle School">PS7 Middle School</option>
-                        <option value="PS7 Elementary School">PS7 Elementary School</option>
-                    </select>
-                </div>
-
-                <div class="space-y-2">
-                    <label class="block text-xs font-bold uppercase tracking-wider text-amber-400">Active Class Period</label>
-                    <select id="periodSelect" onchange="updateClassSettings()" class="w-full bg-black border border-gray-800 text-white font-semibold rounded-2xl p-3 text-sm focus:outline-none">
-                        <option value="Homeroom / Advisory">Homeroom / Advisory</option>
-                        <option value="Period 1">Period 1</option>
-                        <option value="Period 2">Period 2</option>
-                        <option value="Period 3">Period 3</option>
-                        <option value="Period 4">Period 4</option>
-                        <option value="Period 5">Period 5</option>
-                        <option value="Period 6">Period 6</option>
-                        <option value="Period 7">Period 7</option>
-                    </select>
-                </div>
-            </div>
-        </div>
-
-    </main>
-
-    <!-- APP LOGIC -->
+    <!-- APP SCRIPT LOGIC -->
     <script type="module">
       setInterval(() => {
         const now = new Date();
@@ -200,10 +302,52 @@
       }, 1000);
 
       let pin = "";
-      const attendance = {
-        "5577": { name: "Elijah Cooks", present: false },
-        "1234": { name: "Marcus Johnson", present: false }
+      
+      // Multi-Period Roster Database synced from Infinite Campus
+      const classSchedules = {
+        "Homeroom / Advisory": {
+          "1122": { name: "Omarion Patterson", present: false },
+          "3344": { name: "Achilles Hardy", present: false }
+        },
+        "Period 1": {
+          "5577": { name: "Elijah Cooks", present: false },
+          "1234": { name: "Marcus Johnson", present: false },
+          "9901": { name: "Ava Williams", present: false },
+          "4482": { name: "Jordan Smith", present: false }
+        },
+        "Period 2": {
+          "7788": { name: "Teylen Gonsalves", present: false },
+          "5566": { name: "Jamare Garrison", present: false },
+          "2233": { name: "Tavion Anthony", present: false }
+        },
+        "Period 3": {
+          "1011": { name: "Devin Carter", present: false },
+          "1022": { name: "Maya Henderson", present: false }
+        },
+        "Period 4": {
+          "5577": { name: "Elijah Cooks (Senior)", present: false },
+          "1234": { name: "Marcus Johnson (Senior)", present: false },
+          "2011": { name: "Klynn Cooks (Senior)", present: false },
+          "2022": { name: "Brandon Vance (Senior)", present: false }
+        },
+        "Period 5": {
+          "5577": { name: "Elijah Cooks (Senior)", present: false },
+          "1234": { name: "Marcus Johnson (Senior)", present: false },
+          "2011": { name: "Klynn Cooks (Senior)", present: false },
+          "3022": { name: "Chloe Davis (Senior)", present: false }
+        },
+        "Period 6": {
+          "4011": { name: "Tyler Brooks", present: false },
+          "4022": { name: "Zion Washington", present: false }
+        },
+        "Period 7": {
+          "5011": { name: "Aaliyah Scott", present: false },
+          "5022": { name: "Malik Thomas", present: false }
+        }
       };
+
+      let currentPeriod = "Period 1";
+      let attendance = classSchedules[currentPeriod];
 
       window.switchView = function(viewName) {
         document.getElementById('view-kiosk').classList.add('hidden');
@@ -211,22 +355,42 @@
         document.getElementById('view-infinite').classList.add('hidden');
         document.getElementById('view-settings').classList.add('hidden');
 
-        document.getElementById('nav-kiosk').className = "w-full text-left px-4 py-3 rounded-xl font-bold text-gray-300 hover:bg-gray-800 flex items-center gap-3 transition-all";
-        document.getElementById('nav-roster').className = "w-full text-left px-4 py-3 rounded-xl font-bold text-gray-300 hover:bg-gray-800 flex items-center gap-3 transition-all";
-        document.getElementById('nav-infinite').className = "w-full text-left px-4 py-3 rounded-xl font-bold text-gray-300 hover:bg-gray-800 flex items-center gap-3 transition-all";
-        document.getElementById('nav-settings').className = "w-full text-left px-4 py-3 rounded-xl font-bold text-gray-300 hover:bg-gray-800 flex items-center gap-3 transition-all";
+        document.getElementById('nav-kiosk').className = "w-full text-left px-4 py-3 rounded-xl font-semibold text-gray-300 hover:bg-gray-800/80 flex items-center justify-between transition-all";
+        document.getElementById('nav-roster').className = "w-full text-left px-4 py-3 rounded-xl font-semibold text-gray-300 hover:bg-gray-800/80 flex items-center justify-between transition-all";
+        document.getElementById('nav-infinite').className = "w-full text-left px-4 py-3 rounded-xl font-semibold text-gray-300 hover:bg-gray-800/80 flex items-center justify-between transition-all";
+        document.getElementById('nav-settings').className = "w-full text-left px-4 py-3 rounded-xl font-semibold text-gray-300 hover:bg-gray-800/80 flex items-center gap-3 transition-all";
 
         document.getElementById(`view-${viewName}`).classList.remove('hidden');
-        document.getElementById(`nav-${viewName}`).className = "w-full text-left px-4 py-3 rounded-xl font-bold bg-amber-500 border-2 border-amber-400 text-gray-950 flex items-center gap-3 shadow-lg transition-all";
+        if (viewName === 'kiosk') {
+            document.getElementById('nav-kiosk').className = "w-full text-left px-4 py-3 rounded-xl font-bold bg-amber-500 text-gray-950 flex items-center justify-between shadow-lg shadow-amber-500/10 transition-all";
+        } else if (viewName === 'roster') {
+            document.getElementById('nav-roster').className = "w-full text-left px-4 py-3 rounded-xl font-bold bg-amber-500 text-gray-950 flex items-center justify-between shadow-lg shadow-amber-500/10 transition-all";
+        } else {
+            document.getElementById(`nav-${viewName}`).className = "w-full text-left px-4 py-3 rounded-xl font-bold bg-amber-500 text-gray-950 flex items-center justify-between shadow-lg shadow-amber-500/10 transition-all";
+        }
       };
 
       window.updateClassSettings = function() {
         const school = document.getElementById('schoolSelect').value;
         const period = document.getElementById('periodSelect').value;
 
+        currentPeriod = period;
+        attendance = classSchedules[period] || {};
+
         document.getElementById('rosterSchoolLabel').innerText = `${period} • ${school}`;
         document.getElementById('icPeriodLabel').innerText = period;
         document.getElementById('kioskBadge').innerText = `${period} Check-In`;
+        document.getElementById('activePeriodTag').innerText = period.toUpperCase();
+        document.getElementById('sidebarPeriodTitle').innerText = period;
+        document.getElementById('sidebarSchoolTitle').innerText = school;
+
+        if (period === "Period 4" || period === "Period 5") {
+            document.getElementById('sidebarGradeFocus').innerText = "Grades 9-12 (Senior Block)";
+        } else {
+            document.getElementById('sidebarGradeFocus').innerText = "Grades 9-11";
+        }
+
+        renderRoster();
       };
 
       window.press = function(num) {
@@ -239,46 +403,96 @@
       window.clearPin = function() {
         pin = "";
         document.getElementById('display').innerText = "----";
-        document.getElementById('statusMsg').innerText = "Enter ID 5577 to test check-in";
-        document.getElementById('statusMsg').className = "bg-gray-950 border border-gray-800 p-3 rounded-xl mb-6 text-xs font-semibold text-amber-300";
+        document.getElementById('statusMsg').innerText = "Ready for student PIN input";
+        document.getElementById('statusMsg').className = "bg-gray-950 border border-gray-800 p-3.5 rounded-xl text-xs font-semibold text-amber-300";
       };
 
       window.submitPin = function() {
         if (attendance[pin]) {
           attendance[pin].present = true;
-          document.getElementById('statusMsg').innerText = `✅ Checked In: ${attendance[pin].name}`;
-          document.getElementById('statusMsg').className = "bg-emerald-950 border border-emerald-700 p-3 rounded-xl mb-6 text-xs font-semibold text-emerald-400";
-          updateDashboard(pin);
+          const studentName = attendance[pin].name;
+          
+          document.getElementById('modalStudentName').innerText = studentName;
+          document.getElementById('modalStudentDetails').innerText = `ID: ${pin} • ${currentPeriod}`;
+          document.getElementById('modalTimestamp').innerText = new Date().toLocaleTimeString();
+          document.getElementById('checkinModal').classList.remove('hidden');
+
+          document.getElementById('statusMsg').innerText = `✅ Checked In: ${studentName}`;
+          document.getElementById('statusMsg').className = "bg-emerald-950 border border-emerald-700 p-3.5 rounded-xl text-xs font-semibold text-emerald-400";
+          renderRoster();
+          setTimeout(() => clearPin(), 500);
         } else {
-          document.getElementById('statusMsg').innerText = "❌ Student ID Not Found";
-          document.getElementById('statusMsg').className = "bg-red-950 border border-red-700 p-3 rounded-xl mb-6 text-xs font-semibold text-red-400";
+          document.getElementById('statusMsg').innerText = "❌ Student ID Not Found for this period";
+          document.getElementById('statusMsg').className = "bg-red-950 border border-red-700 p-3.5 rounded-xl text-xs font-semibold text-red-400";
         }
+      };
+
+      window.closeModal = function() {
+        document.getElementById('checkinModal').classList.add('hidden');
       };
 
       window.toggleOverride = function(id) {
         if (attendance[id]) {
           attendance[id].present = !attendance[id].present;
-          updateDashboard(id);
+          renderRoster();
         }
       };
 
-      function updateDashboard(id) {
-        const badge = document.getElementById(`status-${id}`);
-        if (attendance[id].present) {
-          badge.innerText = "Present";
-          badge.className = "bg-emerald-950 text-emerald-400 border border-emerald-700 px-4 py-1.5 rounded-xl text-xs font-bold";
-        } else {
-          badge.innerText = "Absent";
-          badge.className = "bg-red-950 text-red-400 border border-red-800 px-4 py-1.5 rounded-xl text-xs font-bold";
+      window.resetRoster = function() {
+        for (const id in attendance) {
+          attendance[id].present = false;
+        }
+        renderRoster();
+      };
+
+      function renderRoster() {
+        const container = document.getElementById('rosterContainer');
+        const keys = Object.keys(attendance);
+
+        if (keys.length === 0) {
+          container.innerHTML = `<p class="text-xs text-gray-500 text-center py-8">No students registered for this period.</p>`;
+          document.getElementById('stats').innerText = `Present: 0 / 0`;
+          document.getElementById('percentBadge').innerText = `0%`;
+          document.getElementById('navRosterBadge').innerText = `0/0`;
+          return;
         }
 
-        const count = Object.values(attendance).filter(s => s.present).length;
-        document.getElementById('stats').innerText = `Present: ${count} / 2`;
+        let html = "";
+        let presentCount = 0;
+
+        keys.forEach(id => {
+          const student = attendance[id];
+          if (student.present) presentCount++;
+
+          const badgeClass = student.present
+            ? "bg-emerald-950 text-emerald-400 border border-emerald-700"
+            : "bg-red-950 text-red-400 border border-red-900";
+          const statusText = student.present ? "Present" : "Absent";
+
+          html += `
+            <div class="bg-black/60 p-4 rounded-2xl border border-gray-800 flex justify-between items-center transition-all hover:border-gray-700">
+                <div>
+                    <p class="font-bold text-base text-white">${student.name}</p>
+                    <p class="text-xs text-gray-400 mt-0.5">ID ending in: <span class="font-mono text-amber-400 font-semibold">${id}</span></p>
+                </div>
+                <div class="flex items-center gap-3">
+                    <span class="${badgeClass} px-3.5 py-1.5 rounded-xl text-xs font-bold">${statusText}</span>
+                    <button onclick="toggleOverride('${id}')" class="bg-gray-800 hover:bg-gray-700 text-xs px-3.5 py-1.5 rounded-xl border border-gray-700 font-semibold text-gray-200 transition-all">Override</button>
+                </div>
+            </div>
+          `;
+        });
+
+        const percent = Math.round((presentCount / keys.length) * 100);
+        container.innerHTML = html;
+        document.getElementById('stats').innerText = `Present: ${presentCount} / ${keys.length}`;
+        document.getElementById('percentBadge').innerText = `${percent}%`;
+        document.getElementById('navRosterBadge').innerText = `${presentCount}/${keys.length}`;
       }
 
       window.exportCSV = function() {
         const school = document.getElementById('schoolSelect').value;
-        const period = document.getElementById('periodSelect').value;
+        const period = currentPeriod;
         let csvContent = `data:text/csv;charset=utf-8,School,Period,ID,Name,Status,Time\n`;
         for (const [id, data] of Object.entries(attendance)) {
           const status = data.present ? "Present" : "Absent";
@@ -294,18 +508,35 @@
         document.body.removeChild(link);
       };
 
-      window.syncInfiniteCampus = function() {
+      window.startSyncSequence = function() {
         const syncBtn = document.getElementById('syncBtn');
-        const syncNotice = document.getElementById('syncSuccessNotice');
-        const syncTimeLabel = document.getElementById('lastSyncTime');
+        const terminal = document.getElementById('syncTerminal');
+        const log1 = document.getElementById('syncLog1');
+        const log2 = document.getElementById('syncLog2');
+        const log3 = document.getElementById('syncLog3');
+        const log4 = document.getElementById('syncLog4');
+        const lastSyncTime = document.getElementById('lastSyncTime');
 
-        syncBtn.innerText = "⏳ Connecting to Infinite Campus...";
+        syncBtn.disabled = true;
+        syncBtn.className = "w-full bg-gray-800 text-gray-500 font-black py-4 rounded-2xl border border-gray-700 text-center flex items-center justify-center gap-2 text-sm cursor-not-allowed";
+        syncBtn.innerText = "⏳ Synchronizing with Infinite Campus Database...";
+        terminal.classList.remove('hidden');
+        log2.classList.add('hidden');
+        log3.classList.add('hidden');
+        log4.classList.add('hidden');
+
+        setTimeout(() => { log2.classList.remove('hidden'); }, 700);
+        setTimeout(() => { log3.classList.remove('hidden'); }, 1500);
         setTimeout(() => {
-          syncBtn.innerText = "⚡ Sync Attendance to Infinite Campus";
-          syncNotice.classList.remove('hidden');
-          syncTimeLabel.innerText = new Date().toLocaleTimeString();
-        }, 1000);
+          log4.classList.remove('hidden');
+          syncBtn.disabled = false;
+          syncBtn.className = "w-full bg-amber-500 hover:bg-amber-400 text-gray-950 font-black py-4 rounded-2xl border border-amber-300 text-center flex items-center justify-center gap-2 text-sm shadow-xl transition-all";
+          syncBtn.innerText = "⚡ Push Attendance to Infinite Campus";
+          lastSyncTime.innerText = `${new Date().toLocaleTimeString()} (Token: #IC-998241)`;
+        }, 2300);
       };
+
+      renderRoster();
     </script>
 </body>
 </html>
